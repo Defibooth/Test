@@ -6,6 +6,18 @@
   <meta name="theme-color" content="#fcf8f1">
   <title>Défis Photobooth</title>
 
+  <script>
+    // Si le téléphone affiche la page en « version ordinateur » (page ~980 px de large, tout paraît
+    // minuscule), on la recale sur la largeur réelle de l'écran. Sans effet sur un téléphone normal.
+    (function () {
+      var w = screen.width;
+      if (navigator.maxTouchPoints > 0 && w < 700 && window.innerWidth > w * 1.4) {
+        document.documentElement.classList.add('mode-pc');
+        document.documentElement.style.setProperty('--k', window.innerWidth / w);
+      }
+    })();
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -24,7 +36,7 @@
       --rose-2: #e05275;
 
       /* Tailles qui s'adaptent à la hauteur de l'écran du téléphone */
-      --fig: clamp(60px, 11dvh, 88px);
+      --fig: clamp(66px, 12dvh, 96px);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -43,6 +55,14 @@
       justify-content: center;
       overflow-x: hidden;
       padding: max(12px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    }
+
+    /* « Version ordinateur » sur téléphone : on dessine la page à la largeur de l'écran puis on l'agrandit */
+    html.mode-pc body {
+      width: calc(100vw / var(--k));
+      min-height: calc(100vh / var(--k));
+      transform: scale(var(--k));
+      transform-origin: 0 0;
     }
 
     /* Lueurs douces en arrière-plan */
@@ -69,7 +89,7 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 100%;
+      max-width: 420px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -85,7 +105,7 @@
 
     .logo {
       display: block;
-      width: clamp(150px, 24dvh, 230px);
+      width: clamp(170px, 27dvh, 260px);
       max-width: 72vw;
       height: auto;
       /* Espace laissé par les anciennes alliances, entre le logo et le titre */
@@ -97,7 +117,7 @@
 
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.55rem, 4.4dvh, 2.1rem);
+      font-size: clamp(1.7rem, 4.8dvh, 2.3rem);
       font-weight: 700;
       line-height: 1.1;
       letter-spacing: 0.5px;
@@ -109,7 +129,7 @@
 
     .subtitle {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(0.9rem, 2.2dvh, 1rem);
+      font-size: clamp(0.95rem, 2.4dvh, 1.1rem);
       font-style: italic;
       color: rgba(74, 51, 56, 0.75);
     }
@@ -132,12 +152,12 @@
 
     .card {
       width: 100%;
-      min-height: clamp(130px, 21dvh, 190px);
+      min-height: clamp(140px, 22dvh, 200px);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 18px 18px;
-      font-size: clamp(1.15rem, 2.8dvh, 1.4rem);
+      font-size: clamp(1.25rem, 3dvh, 1.55rem);
       font-weight: 600;
       line-height: 1.4;
       text-wrap: balance;
@@ -175,11 +195,11 @@
     /* Bouton pensé pour le pouce : grande zone tactile */
     button {
       width: 100%;
-      min-height: 58px;
+      min-height: 60px;
       margin-top: 4px;
       padding: 16px 0;
       font-family: 'Montserrat', sans-serif;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -278,15 +298,172 @@
       "Prends une photo amusante avec 3 personnes",
       "Prends une photo avec l'air dégoûté d'être là",
       "Imite la pose d'une statue célèbre",
-      "Fais ta plus belle pose de mannequin sur tapis rouge"
+      "Fais ta plus belle pose de mannequin sur tapis rouge",
+      "Prends la pose du couple de mariés",
+      "Fais semblant de dire « Oui, je le veux ! »",
+      "Mime le premier baiser des mariés",
+      "Fais semblant de lancer le bouquet",
+      "Mime une demande en mariage",
+      "Prends la pose du témoin qui a perdu les alliances",
+      "Fais semblant d'être très en retard à la cérémonie",
+      "Fais semblant de pleurer de joie pendant les discours",
+      "Souffle un baiser aux mariés",
+      "Fais semblant d'appeler les mariés pour les féliciter",
+      "Prends la pose de la plus belle des demoiselles d'honneur",
+      "Prends la pose du plus classe des témoins",
+      "Fais comme si tu portais un énorme bouquet",
+      "Pose comme les mariés sur la photo de mariage de tes grands-parents",
+      "Prends la pose d'un couple de vieux mariés, 50 ans plus tard",
+      "Fais semblant de dire adieu à ta vie de célibataire",
+      "Soulève ton voisin(e) comme pour franchir le seuil de la maison",
+      "Faites un cœur avec vos bras à plusieurs",
+      "Fais un cœur avec tes mains",
+      "Dansez un slow, même sans musique",
+      "Fais le plus beau sourire de ta vie",
+      "Prends une photo avec ton plus grand éclat de rire",
+      "Fais ton plus grand clin d'œil",
+      "Tire la langue",
+      "Fais la plus grosse moue de ta vie",
+      "Fais le plus grand bisou à la caméra",
+      "Prends un air plus surpris que jamais",
+      "Fais comme si tu avais vu un fantôme",
+      "Fais semblant d'avoir mangé quelque chose de très piquant",
+      "Fais la grimace du citron",
+      "Fais semblant de t'évanouir d'émotion",
+      "Fais comme si tu venais de gagner au loto",
+      "Fais comme si tu venais d'apprendre la meilleure nouvelle de l'année",
+      "Fais semblant d'avoir très froid",
+      "Fais semblant d'éternuer",
+      "Pose avec un grand sourire, mais les yeux fermés",
+      "Penche la tête sur le côté, le plus possible",
+      "Crie de joie, bouche grande ouverte",
+      "Prends un air catastrophé, comme si tout était perdu",
+      "Prends un air mystérieux et ne souris surtout pas",
+      "Prends la pose d'un super-héros",
+      "Prends la pose d'une star de cinéma sous les flashs",
+      "Prends la pose d'un acteur de film d'action",
+      "Prends la pose de la Joconde",
+      "Prends la pose d'un cow-boy",
+      "Prends la pose d'un boxeur avant le combat",
+      "Prends la pose d'un danseur de tango",
+      "Prends la pose d'un agent secret",
+      "Prends un air de détective qui a trouvé un indice",
+      "Prends la pose d'un chef d'orchestre",
+      "Prends la pose d'un roi ou d'une reine",
+      "Prends la pose d'une famille royale",
+      "Prends la pose d'une photo de classe, bien sérieux",
+      "Prends la pose d'un groupe de rock",
+      "Prends la pose de la photo de famille officielle",
+      "Fais comme si tu étais très riche",
+      "Fais ta plus belle pose de yoga",
+      "Imite un robot",
+      "Imite ton animal préféré",
+      "Imite un pingouin",
+      "Fais semblant de surfer sur une vague",
+      "Pose comme si les paparazzis te suivaient partout",
+      "Fais semblant d'être une statue de cire",
+      "Fais semblant d'être un mannequin qui défile",
+      "Montre tes muscles",
+      "Imite une star de la chanson",
+      "Fais ta meilleure danse de mariage",
+      "Fais ton plus beau pas de danse",
+      "Faites tous le même pas de danse en même temps",
+      "Fais semblant de chanter à pleins poumons",
+      "Fais semblant de jouer de la guitare",
+      "Mime un opéra, avec toute l'émotion possible",
+      "Fais semblant de faire un discours très important",
+      "Fais semblant de trinquer avec toutes les personnes présentes",
+      "Fais semblant de boire du champagne, le petit doigt levé",
+      "Fais comme si tu mangeais une part de gâteau géante",
+      "Fais semblant d'être surpris(e) en train de manger en cachette",
+      "Fais semblant de t'endormir sur l'épaule de ton voisin(e)",
+      "Fais semblant de prendre un selfie avec la caméra",
+      "Fais un high five à la caméra",
+      "Fais discrètement des oreilles de lapin derrière ton voisin(e)",
+      "Pose comme si vous étiez les meilleurs amis du monde",
+      "Prends la pose d'un duo comique",
+      "Faites un câlin groupé",
+      "Prends la pose du Titanic",
+      "Fais comme si tu venais de rencontrer l'amour de ta vie",
+      "Imite la façon dont ton voisin(e) danse",
+      "Prends une photo où tout le monde regarde dans une direction différente",
+      "Prends une photo où tout le monde fait semblant d'être très en colère",
+      "Prends une photo où tout le monde fait semblant d'être endormi"
     ];
 
-    // Réserve des défis encore disponibles : un défi tiré en est retiré
-    let pool = [...tousLesDefis];
-    let current = null;
+    // ---- Pioche mélangée ----
+    // Les défis sont mélangés comme un jeu de cartes (mélange de Fisher-Yates, avec le générateur
+    // aléatoire sécurisé du navigateur). On pioche dans l'ordre : aucun défi ne revient avant que
+    // tous soient passés. La pioche est mémorisée sur l'appareil : elle survit à un rechargement
+    // de la page (par exemple après le QR code), donc on ne repart pas toujours des mêmes défis.
+    const CLE = 'defis-pioche-v1';
+    let pioche = [];   // défis dans l'ordre du mélange
+    let position = 0;  // prochain défi à tirer
+
+    function hasard(n) {
+      // Entier aléatoire équitable entre 0 et n-1
+      if (window.crypto && crypto.getRandomValues) {
+        const max = Math.floor(0x100000000 / n) * n;
+        const buf = new Uint32Array(1);
+        do { crypto.getRandomValues(buf); } while (buf[0] >= max);
+        return buf[0] % n;
+      }
+      return Math.floor(Math.random() * n);
+    }
+
+    function melanger(liste) {
+      const a = [...liste];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = hasard(i + 1);
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function sauver() {
+      try { localStorage.setItem(CLE, JSON.stringify({ pioche, position })); } catch (e) {}
+    }
+
+    function nouvellePioche(dernier) {
+      pioche = melanger(tousLesDefis);
+      // Le premier défi du nouveau tour ne doit pas être celui qui vient de sortir
+      if (dernier && pioche[0] === dernier && pioche.length > 1) {
+        const j = 1 + hasard(pioche.length - 1);
+        [pioche[0], pioche[j]] = [pioche[j], pioche[0]];
+      }
+      position = 0;
+    }
+
+    function chargerPioche() {
+      try {
+        const sauvegarde = JSON.parse(localStorage.getItem(CLE));
+        // On réutilise la pioche seulement si la liste de défis n'a pas changé
+        const memeListe = sauvegarde
+          && Array.isArray(sauvegarde.pioche)
+          && sauvegarde.pioche.length === tousLesDefis.length
+          && sauvegarde.pioche.every(d => tousLesDefis.includes(d))
+          && Number.isInteger(sauvegarde.position);
+        if (memeListe) {
+          pioche = sauvegarde.pioche;
+          position = sauvegarde.position;
+          return;
+        }
+      } catch (e) {}
+      nouvellePioche(null);
+      sauver();
+    }
+
+    function piocherDefi() {
+      if (position >= pioche.length) nouvellePioche(pioche[pioche.length - 1]);
+      const d = pioche[position++];
+      sauver();
+      return d;
+    }
+
+    chargerPioche();
 
     // Nombre maximum de défis par session, puis message QR code
-    const MAX_DEFIS = 3;
+    const MAX_DEFIS = 5;
     const MESSAGE_FIN = "Flash le QR code pour continuer";
     let tires = 0;
 
@@ -294,13 +471,15 @@
     const btn = document.getElementById('actionBtn');
     let intervalId = null;
     let isRunning = false;
+    let affiche = null;
 
-    function nextDefi() {
+    // Pendant le défilement : simple effet visuel, le vrai défi est tiré au STOP
+    function defilement() {
       let d;
       do {
-        d = pool[Math.floor(Math.random() * pool.length)];
-      } while (d === current && pool.length > 1);
-      current = d;
+        d = tousLesDefis[hasard(tousLesDefis.length)];
+      } while (d === affiche && tousLesDefis.length > 1);
+      affiche = d;
       card.textContent = d;
     }
 
@@ -325,8 +504,8 @@
       if (isRunning) {
         clearInterval(intervalId);
         isRunning = false;
-        // Le défi affiché est tiré : on le retire de la réserve
-        pool = pool.filter(d => d !== current);
+        // Le vrai défi est pioché dans la pioche mélangée
+        card.textContent = piocherDefi();
         tires++;
         btn.textContent = "Recommencer";
         btn.classList.remove('running');
@@ -343,13 +522,11 @@
           return;
         }
 
-        // Tous les défis ont été tirés : on remet la liste complète
-        if (pool.length === 0) pool = [...tousLesDefis];
         isRunning = true;
         btn.textContent = "Stop !";
         btn.classList.add('running');
         card.classList.remove('stopped', 'placeholder');
-        intervalId = setInterval(nextDefi, 60);
+        intervalId = setInterval(defilement, 60);
       }
     }
   </script>
