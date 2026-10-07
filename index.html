@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Défis Photobooth</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --gold: #d4af37;
+      --gold-light: #f3e7e1;
+      --night: #0d0a10;
+      --plum: #231929;
+      --text: #fceee9;
+      --rose-1: #a32a48;
+      --rose-2: #e05275;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: radial-gradient(circle at 50% 0%, var(--plum) 0%, var(--night) 70%);
+      background-attachment: fixed;
+      color: var(--text);
+      text-align: center;
+      /* Tout le contenu est regroupé au centre : plus de grands vides */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: max(14px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom));
+    }
+
+    main {
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .logo {
+      width: 96px;
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, #fdfcfb 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-style: italic;
+      color: rgba(252, 238, 233, 0.7);
+    }
+
+    /* Carte : hauteur minimale, grandit si le texte est long */
+    .card {
+      width: 100%;
+      min-height: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px 20px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(212, 175, 55, 0.05);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                  border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .card.placeholder {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: rgba(252, 238, 233, 0.6);
+    }
+
+    .card.stopped {
+      transform: scale(1.03);
+      border-color: rgba(212, 175, 55, 0.9);
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.3), inset 0 0 20px rgba(212, 175, 55, 0.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--night);
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, #b89726 100%);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    button:hover { box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); transform: translateY(-2px); }
+    button:active { transform: scale(0.97); }
+    button:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+
+    button.running {
+      background: linear-gradient(135deg, var(--rose-1) 0%, var(--rose-2) 100%);
+      color: #fff;
+    }
+
+    /* Petits écrans en hauteur (paysage) : on compacte encore */
+    @media (max-height: 600px) {
+      .logo { width: 64px; }
+      h1 { font-size: 1.6rem; }
+      .card { min-height: 120px; font-size: 1.15rem; }
+      main { gap: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <header>
+      <img src="logo.png" alt="Logo Defibooth" class="logo"
+           onerror="this.style.display='none'; console.error('Image non trouvée : vérifiez que logo.png est bien présent à la racine du dépôt GitHub.');">
+      <h1>Défis Photobooth</h1>
+      <p class="subtitle">Seras-tu prêt(e) à relever le défi ?</p>
+    </header>
+
+    <div class="card placeholder" id="card" aria-live="polite">Touche le bouton pour lancer</div>
+
+    <button id="actionBtn" onclick="toggleLoop()">Lancer</button>
+  </main>
+
+  <script>
+    const defis = [
+      "Fais une grimace hilarante !",
+      "Prends une photo avec le DJ",
+      "Prends une photo avec ton meilleur profil",
+      "Prends une photo que tu n'oserais pas publier sur les réseaux",
+      "Prends une photo amusante avec 3 personnes",
+      "Prends une photo avec l'air dégoûté d'être là",
+      "Imite la pose d'une statue célèbre",
+      "Fais ta plus belle pose de mannequin sur tapis rouge"
+    ];
+
+    const card = document.getElementById('card');
+    const btn = document.getElementById('actionBtn');
+    let intervalId = null;
+    let isRunning = false;
+    let lastIndex = -1;
+
+    function nextDefi() {
+      let i;
+      do {
+        i = Math.floor(Math.random() * defis.length);
+      } while (i === lastIndex && defis.length > 1);
+      lastIndex = i;
+      card.textContent = defis[i];
+    }
+
+    function toggleLoop() {
+      if (isRunning) {
+        clearInterval(intervalId);
+        isRunning = false;
+        btn.textContent = "Recommencer";
+        btn.classList.remove('running');
+        card.classList.add('stopped');
+
+        if (typeof confetti === "function") {
+          confetti({
+            particleCount: 80,
+            spread: 70,
+            origin: { y: 0.65 },
+            colors: ['#d4af37', '#ffffff', '#f3e7e1']
+          });
+        }
+      } else {
+        isRunning = true;
+        btn.textContent = "Stop !";
+        btn.classList.add('running');
+        card.classList.remove('stopped', 'placeholder');
+        intervalId = setInterval(nextDefi, 60);
+      }
+    }
+  </script>
+
+</body>
+</html>
