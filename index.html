@@ -49,6 +49,7 @@
     }
 
     header {
+      margin-bottom: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -86,6 +87,7 @@
     .card {
       width: 100%;
       min-height: 170px;
+      margin: 18px 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -119,6 +121,7 @@
 
     button {
       width: 100%;
+      margin-top: 16px;
       padding: 15px 0;
       font-family: 'Montserrat', sans-serif;
       font-size: 1rem;
@@ -147,7 +150,7 @@
     @media (max-height: 600px) {
       .logo { width: 64px; }
       h1 { font-size: 1.6rem; }
-      .card { min-height: 120px; font-size: 1.15rem; }
+      .card { min-height: 120px; font-size: 1.15rem; margin: 8px 0; }
       main { gap: 10px; }
     }
 
@@ -198,6 +201,24 @@
       card.textContent = defis[i];
     }
 
+    const confettiColors = ['#d4af37', '#ffffff', '#f3e7e1', '#e05275', '#f5d76e'];
+
+    function launchConfetti() {
+      if (typeof confetti !== "function") return;
+
+      // Grosse explosion centrale
+      confetti({ particleCount: 200, spread: 100, startVelocity: 45, origin: { y: 0.6 }, colors: confettiColors });
+      confetti({ particleCount: 100, spread: 160, startVelocity: 30, scalar: 1.2, origin: { y: 0.6 }, colors: confettiColors });
+
+      // Pluie continue depuis les deux côtés pendant ~2 s
+      const end = Date.now() + 2000;
+      (function frame() {
+        confetti({ particleCount: 6, angle: 60, spread: 60, origin: { x: 0, y: 0.7 }, colors: confettiColors });
+        confetti({ particleCount: 6, angle: 120, spread: 60, origin: { x: 1, y: 0.7 }, colors: confettiColors });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+
     function toggleLoop() {
       if (isRunning) {
         clearInterval(intervalId);
@@ -206,14 +227,7 @@
         btn.classList.remove('running');
         card.classList.add('stopped');
 
-        if (typeof confetti === "function") {
-          confetti({
-            particleCount: 80,
-            spread: 70,
-            origin: { y: 0.65 },
-            colors: ['#d4af37', '#ffffff', '#f3e7e1']
-          });
-        }
+        launchConfetti();
       } else {
         isRunning = true;
         btn.textContent = "Stop !";
